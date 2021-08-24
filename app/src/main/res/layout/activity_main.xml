@@ -93,13 +93,13 @@
         android:id="@+id/spNationality"
         android:layout_width="299dp"
         android:layout_height="30dp"
-        android:layout_marginStart="88dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inEmail" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etPassword"
+        android:id="@+id/inPassword"
         android:layout_width="305dp"
         android:layout_height="66dp"
         android:layout_marginStart="88dp"
@@ -110,6 +110,7 @@
         app:layout_constraintTop_toBottomOf="@+id/spNationality">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -120,12 +121,23 @@
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="252dp"
-        android:layout_marginTop="63dp"
-        android:layout_marginEnd="265dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="184dp"
+        android:layout_marginEnd="26dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.079"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/inPassword" />
+
+    <Button
+        android:id="@+id/btnLogin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="152dp"
+        android:layout_marginTop="184dp"
+        android:text="Login"
+        app:layout_constraintStart_toEndOf="@+id/btnRegister"
+        app:layout_constraintTop_toBottomOf="@+id/inPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

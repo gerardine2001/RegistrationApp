@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, nationalities)
         nationalityadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spNationality.adapter = nationalityadapter
+        clickRegister()
     }
 
     fun clickRegister() {
@@ -66,9 +67,9 @@ class MainActivity : AppCompatActivity() {
                 error = true
                 binding.etPassword.setError("this field required")
             }
-            if (!error){
-                binding.pbRegistration.visibility= View.VISIBLE
-                var lrgRequest= RegistrationRequest(
+            if (!error) {
+                binding.pbRegistration.visibility = View.VISIBLE
+                var lrgRequest = RegistrationRequest(
                     name = name,
                     PhoneNumber = phoneNumber,
                     email = email,
@@ -76,29 +77,28 @@ class MainActivity : AppCompatActivity() {
                     nationality = nationality,
                     password = password
                 )
-                var retrofit= ApiClient.buildService(ApiInterface::class.java)
-                var request= retrofit.registerStudent(lrgRequest)
-                request.enqueue(object : Callback<RegistrationResponse> {
+                var retrofit=ApiClient.buildApiClient(ApiInterface::class.java)
+                var request=retrofit.registerStudent(lrgRequest)
+                request.enqueue(object : retrofit2.Callback<RegistrationResponse?> {
                     override fun onResponse(
-                        call: Call<RegistrationResponse>,
-                        response: Response<RegistrationResponse>
+                        call: Call<RegistrationResponse?>,
+                        response: Response<RegistrationResponse?>
                     ) {
-                        binding.pbRegistration.visibility=View.GONE
-                        if (response.isSuccessful){
-                            Toast.makeText(baseContext,"Registration successfully", Toast.LENGTH_LONG).show()
-                        }
+                      binding.pbRegistration.visibility=View.GONE
+                        if (response.isSuccessful)
+                            Toast.makeText(baseContext,"Registration Successfully",Toast.LENGTH_LONG).show()
                         else{
-                            Toast.makeText(baseContext, response.errorBody()?.string(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(baseContext,response.errorBody()?.toString(),Toast.LENGTH_LONG).show()
                         }
                     }
 
-                    override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
-                        binding.pbRegistration.visibility=View.GONE
-                        Toast.makeText(baseContext, t.message, Toast.LENGTH_LONG).show()
+                    override fun onFailure(call: Call<RegistrationResponse?>, t: Throwable) {
+                     binding.pbRegistration.visibility=View.GONE
+                     Toast.makeText(baseContext,t.message,Toast.LENGTH_LONG).show()
                     }
+
                 })
-
-
+            }
         }
     }
 }
