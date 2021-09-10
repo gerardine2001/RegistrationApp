@@ -1,12 +1,14 @@
-package com.example.registrationform
+package com.example.registrationform.ui
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.registrationform.R
+import com.example.registrationform.models.Courses
 
-class CoursesAdapter(var courseList:List<Courses>):RecyclerView.Adapter<ViewHolder>() {
+class CoursesAdapter(var courseList: List<Courses>):RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
        var itemView=LayoutInflater.from(parent.context).inflate(R.layout.courses_list_items,parent,false)
         return ViewHolder(itemView)

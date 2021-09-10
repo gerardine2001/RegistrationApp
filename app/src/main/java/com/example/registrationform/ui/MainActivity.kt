@@ -1,34 +1,52 @@
-package com.example.registrationform
+package com.example.registrationform.ui
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.viewModels
+import com.example.registrationform.Constants
+import com.example.registrationform.R
 import com.example.registrationform.api.ApiClient
 import com.example.registrationform.api.ApiInterface
 import com.example.registrationform.databinding.ActivityMainBinding
 import com.example.registrationform.models.RegistrationRequest
 import com.example.registrationform.models.RegistrationResponse
+import com.example.registrationform.viewmodel.UserViewModel
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    lateinit var  sharedPrefs: SharedPreferences
+    val userViewModel:UserViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupSpinner()
+        sharedPrefs =getSharedPreferences(Constants.REGISTRATION_PREFS, Context.MODE_PRIVATE)
+        redirectUser()
     }
 
+    override fun onResume() {
+        super.onResume()
+        userViewModel.registrationLiveData.observe(this ,{regResponse->
+            
+        })
+
+    }
+
+
     fun setupSpinner() {
-        var nationalities =
-            arrayOf("select Nationality", "Kenyan", "Rwandan", "South Sudanese", "Ugandan")
-        var nationalityadapter =
-            ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, nationalities)
-        nationalityadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spNationality.adapter = nationalityadapter
+        var nationalities = arrayOf("select Nationality", "Kenyan", "Rwandan", "South Sudanese", "Ugandan")
+        var nationalityAdapter = ArrayAdapter(baseContext, android.R.layout.simple_spinner_item, nationalities)
+        nationalityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spNationality.adapter = nationalityAdapter
         clickRegister()
     }
 
@@ -74,31 +92,26 @@ class MainActivity : AppCompatActivity() {
                     PhoneNumber = phoneNumber,
                     email = email,
                     dateOfBirth = dob,
-                    nationality = nationality,
+                    nationality = nationality.uppercase(),
                     password = password
                 )
-                var retrofit=ApiClient.buildApiClient(ApiInterface::class.java)
-                var request=retrofit.registerStudent(lrgRequest)
-                request.enqueue(object : retrofit2.Callback<RegistrationResponse?> {
-                    override fun onResponse(
-                        call: Call<RegistrationResponse?>,
-                        response: Response<RegistrationResponse?>
-                    ) {
-                      binding.pbRegistration.visibility=View.GONE
-                        if (response.isSuccessful)
-                            Toast.makeText(baseContext,"Registration Successfully",Toast.LENGTH_LONG).show()
-                        else{
-                            Toast.makeText(baseContext,response.errorBody()?.toString(),Toast.LENGTH_LONG).show()
-                        }
-                    }
+                userViewModel.registerStudent(lrgRequest)
 
-                    override fun onFailure(call: Call<RegistrationResponse?>, t: Throwable) {
-                     binding.pbRegistration.visibility=View.GONE
-                     Toast.makeText(baseContext,t.message,Toast.LENGTH_LONG).show()
-                    }
-
-                })
             }
         }
     }
+    fun redirectUser(){
+        var accessToken=sharedPrefs.getString(Constants.ACCESS_TOKEN,Constants.EMPTY)
+        if (accessToken!!.isNotEmpty() && accessToken.isBlank()) {
+            startActivity(Intent( this, CoursesActivity::class.java))
+
+
+
+        }
+        else{
+            startActivity(Intent(this, LogInActivity::class.java))
+
+        }
+    }
+
 }
